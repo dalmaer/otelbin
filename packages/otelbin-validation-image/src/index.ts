@@ -20,6 +20,15 @@ declare global {
   }
 }
 
+interface ValidationPayload {
+  config: string;
+  env: Env;
+}
+
+interface Env {
+  [key: string]: string;
+}
+
 const distroName = process.env.DISTRO_NAME;
 
 const defaultErrorPrefix = 'Error: ';
@@ -106,7 +115,8 @@ export const validateOtelCol = async (otelcolRealPath: string, configPath: strin
 };
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
-  const config = event.body;
+  const validationPayload = JSON.parse(event.body!) as ValidationPayload;
+  const config = validationPayload.config;
 
   if (
     !config || // Empty string
